@@ -1,0 +1,51 @@
+@FMLab.Aspnet.CleanArchitecture.Api_HostAddress = http://localhost:9000
+
+POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users
+Content-Type: application/json
+
+{
+  "name": "Jon Doe",
+  "email": "john.doe@email.com"
+}
+
+###
+
+GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users?page=1&pageSize=2
+
+###
+
+GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
+
+###
+
+POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1/deactivate
+
+###
+
+GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users?status=Deactivated
+
+###
+
+GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users?status=Active
+
+###
+
+PATCH {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
+Content-Type: application/json
+
+{
+  "name": "John Doe"
+}
+
+###
+
+PUT {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
+Content-Type: application/json
+
+{
+  "name": "John Doe"
+}
+
+###
+
+DELETE {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
