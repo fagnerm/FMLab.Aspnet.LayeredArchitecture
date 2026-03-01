@@ -1,8 +1,9 @@
 @FMLab.Aspnet.CleanArchitecture.Api_HostAddress = http://localhost:9000
+@ApiKey = user-scret-api-key
 
 POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users
 Content-Type: application/json
-X-Api-Key: 
+X-Api-Key: {{ApiKey}}
 
 {
   "name": "Jon Doe",
@@ -12,28 +13,33 @@ X-Api-Key:
 ###
 
 GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users?page=1&pageSize=2
+X-Api-Key: {{ApiKey}}
 
 ###
 
 GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
+X-Api-Key: {{ApiKey}}
 
 ###
 
 POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1/deactivate
+X-Api-Key: {{ApiKey}}
 
 ###
 
 GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users?status=Deactivated
+X-Api-Key: {{ApiKey}}
 
 ###
 
 GET {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users?status=Active
+X-Api-Key: {{ApiKey}}
 
 ###
 
 PATCH {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
 Content-Type: application/json
-
+X-Api-Key: {{ApiKey}}
 {
   "name": "John Doe"
 }
@@ -42,11 +48,12 @@ Content-Type: application/json
 
 PUT {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
 Content-Type: application/json
-
+X-Api-Key: {{ApiKey}}
 {
   "name": "John Doe"
 }
 
 ###
 
-DELETE {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
+DELETE {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/
+X-Api-Key: {{ApiKey}}1
