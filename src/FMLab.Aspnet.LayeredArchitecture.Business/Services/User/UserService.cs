@@ -26,13 +26,16 @@ public class UserService : IUserService
         var name = new Name(input.Name);
         var email = input.Email is null ? null : new Email(input.Email);
 
-        var found = await _userRepository.ExistsByKeyAsync(name.Value, email?.Value, cancellationToken);
+        var found = await _userRepository.ExistsByKeyAsync(name.Value, email?.Value, cancellationToken)
+                                         .ConfigureAwait(false);
 
         if (found) return Result<CreateUserOutputDTO>.Conflict("User already exists");
 
         var user = new Entities.User(name, email);
-        await _userRepository.AddAsync(user, cancellationToken);
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _userRepository.AddAsync(user, cancellationToken)
+                             .ConfigureAwait(false);
+        await _unitOfWork.CommitTransactionAsync(cancellationToken)
+                         .ConfigureAwait(false);
 
         var result = new CreateUserOutputDTO(user.Id, user.Name.Value, user.Email?.Value, user.Status.ToString());
 
@@ -46,7 +49,8 @@ public class UserService : IUserService
         if (existingUser is null) return Result<NoOutput>.NotFound("User not found");
 
         _userRepository.Delete(existingUser!);
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.CommitTransactionAsync(cancellationToken)
+                         .ConfigureAwait(false);
 
         return Result<NoOutput>.NoContent();
     }
@@ -62,7 +66,8 @@ public class UserService : IUserService
 
         user.Deactivate();
         _userRepository.Update(user);
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.CommitTransactionAsync(cancellationToken)
+                         .ConfigureAwait(false);
 
         return Result<NoOutput>.NoContent();
     }
@@ -70,7 +75,8 @@ public class UserService : IUserService
     public async Task<Result<ListUsersOutputDTO>> ListAllUsersAsync(GetListUsersInputDTO input, CancellationToken cancellationToken)
     {
         var filter = new ListUsersFilterDTO(input.Status, input.Page, input.PageSize);
-        var result = await _userRepository.ListAsync(filter, cancellationToken);
+        var result = await _userRepository.ListAsync(filter, cancellationToken)
+                                          .ConfigureAwait(false);
 
         var output = new ListUsersOutputDTO(result.Items, result.Page, result.PageSize, result.TotalItems);
         return Result<ListUsersOutputDTO>.Success(output);
@@ -78,7 +84,8 @@ public class UserService : IUserService
 
     public async Task<Result<UserSummaryDTO>> ListUserAsync(GetUserInputDTO input, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.ListUserByIdAsync(input.Id, cancellationToken);
+        var user = await _userRepository.ListUserByIdAsync(input.Id, cancellationToken)
+                                        .ConfigureAwait(false);
 
         if (user == null)
         {
@@ -90,7 +97,8 @@ public class UserService : IUserService
 
     public async Task<Result<UpdateUserOutputDTO>> UpdateUserAsync(UpdateUserInputDTO input, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(input.Id, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(input.Id, cancellationToken)
+                                        .ConfigureAwait(false);
 
         if (user is null) return Result<UpdateUserOutputDTO>.NotFound("User not found");
 
@@ -99,7 +107,8 @@ public class UserService : IUserService
         user.Update(name, email);
 
         _userRepository.Update(user);
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.CommitTransactionAsync(cancellationToken)
+                         .ConfigureAwait(false);
 
         var result = new UpdateUserOutputDTO(user.Id, user.Name.Value, user.Email?.Value, user.Status.ToString());
         return Result<UpdateUserOutputDTO>.Success(result);
@@ -107,7 +116,8 @@ public class UserService : IUserService
 
     public async Task<Result<UpdateUserOutputDTO>> UpdateUserPartiallyAsync(PatchUserInputDTO input, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(input.Id, cancellationToken);
+        var user = await _userRepository.GetByIdAsync(input.Id, cancellationToken)
+                                        .ConfigureAwait(false);
 
         if (user is null) return Result<UpdateUserOutputDTO>.NotFound("User not found");
 
@@ -116,7 +126,8 @@ public class UserService : IUserService
         user.Update(name, email);
 
         _userRepository.Update(user);
-        await _unitOfWork.CommitTransactionAsync(cancellationToken);
+        await _unitOfWork.CommitTransactionAsync(cancellationToken)
+                         .ConfigureAwait(false);
 
         var result = new UpdateUserOutputDTO(user.Id, user.Name.Value, user.Email?.Value, user.Status.ToString());
         return Result<UpdateUserOutputDTO>.Success(result);

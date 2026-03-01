@@ -12,8 +12,6 @@ using Microsoft.EntityFrameworkCore;
 namespace FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Repositories;
 public class UserRepository : IUserRepository
 {
-
-
     private readonly ApplicationDbContext _context;
 
     public UserRepository(ApplicationDbContext context)
@@ -37,7 +35,8 @@ public class UserRepository : IUserRepository
         var user = await _context
                             .Users
                             .AsTracking()
-                            .SingleOrDefaultAsync(_ => _.Id == id, cancellationToken);
+                            .SingleOrDefaultAsync(_ => _.Id == id, cancellationToken)
+                            .ConfigureAwait(false);
 
         return user;
     }
@@ -54,7 +53,8 @@ public class UserRepository : IUserRepository
                              .AsNoTracking()
                              .AsQueryable()
                              .AnyAsync(u => (name != null && u.Name.Value == name) ||
-                                            (email != null && u.Email!.Value == email), cancellationToken);
+                                            (email != null && u.Email!.Value == email), cancellationToken)
+                             .ConfigureAwait(false);
     }
 
     public async Task<CollectionResult<UserSummaryDTO>> ListAsync(ListUsersFilterDTO filter, CancellationToken cancellationToken)
@@ -79,7 +79,8 @@ public class UserRepository : IUserRepository
                 t.Email!.Value,
                 t.Status.ToString()
                 ))
-            .ToListAsync(cancellationToken);
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
 
         return new CollectionResult<UserSummaryDTO>(
             items, filter.Page, filter.PageSize, totalCount);
@@ -91,7 +92,8 @@ public class UserRepository : IUserRepository
                             .AsNoTracking()
                             .AsQueryable();
 
-        var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken);
+        var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken)
+                              .ConfigureAwait(false);
 
         if (user is null)
         {
