@@ -2,6 +2,7 @@
 
 POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users
 Content-Type: application/json
+X-Api-Key: 
 
 {
   "name": "Jon Doe",
