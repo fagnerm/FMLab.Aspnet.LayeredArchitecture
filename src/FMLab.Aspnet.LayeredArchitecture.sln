@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMLab.Aspnet.LayeredArchitecture.Api", "FMLab.Aspnet.LayeredArchitecture\FMLab.Aspnet.LayeredArchitecture.Api.csproj", "{5A7BE948-86EF-44B2-8032-43B76A5ED96D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMLab.Aspnet.LayeredArchitecture.Api", "FMLab.Aspnet.LayeredArchitecture.Api\FMLab.Aspnet.LayeredArchitecture.Api.csproj", "{5A7BE948-86EF-44B2-8032-43B76A5ED96D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FMLab.Aspnet.LayeredArchitecture.Infrastructure", "FMLab.Aspnet.LayeredArchitecture.Infrastructure\FMLab.Aspnet.LayeredArchitecture.Infrastructure.csproj", "{673E53ED-8CCE-4EBA-A624-4416E62E59F7}"
 EndProject

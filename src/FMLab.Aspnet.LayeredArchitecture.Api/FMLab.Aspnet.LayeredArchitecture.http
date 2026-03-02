@@ -1,5 +1,5 @@
 @FMLab.Aspnet.CleanArchitecture.Api_HostAddress = http://localhost:9000
-@ApiKey = user-scret-api-key
+@ApiKey = e6ae77d8-95b0-4627-b6b9-aa2a56b78474
 
 POST {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users
 Content-Type: application/json
