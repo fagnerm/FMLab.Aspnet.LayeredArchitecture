@@ -1,48 +1,36 @@
+x-api: &api-base
+    build:
+      context: .
+      dockerfile: /Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_HTTP_PORTS: 8080
+      ApiKey: ${API_KEY}
+      Database:Server: ${DB_SERVER}
+      Database:Port: ${DB_PORT}
+      Database:Name: ${DB_NAME}
+      Database:User: ${DB_USER}
+      Database:Password: ${DB_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 512M
+
 services:
 
   api1:
-    build:
-      context: .
-      dockerfile: src/FMLab.Aspnet.LayeredArchitecture/Dockerfile
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_HTTP_PORTS: 8080
-      ApiKey: ${API_KEY}
-      ConnectionStrings__DefaultConnection: >-
-        Host=postgres;Port=5432;Database=layered_arch;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 512M
-
+    <<: *api-base
+    container_name: api1
   api2:
-    build:
-      context: .
-      dockerfile: src/FMLab.Aspnet.LayeredArchitecture/Dockerfile
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_HTTP_PORTS: 8080
-      ApiKey: ${API_KEY}
-      ConnectionStrings__DefaultConnection: >-
-        Host=postgres;Port=5432;Database=layered_arch;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          cpus: '2'
-          memory: 512M
+    <<: *api-base
+    container_name: api2
 
   nginx:
     image: nginx:1.27-alpine
@@ -59,12 +47,15 @@ services:
 
   postgres:
     image: postgres:16-alpine
+    container_name: postgres-db
     environment:
-      POSTGRES_DB: layered_arch
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_PORT: ${DB_PORT}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     healthcheck:
