@@ -2,8 +2,8 @@
 // Copyright (c) 2026 Fagner Marinho 
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
-using FMLab.Aspnet.LayeredArchitecture.Business.Shared.Settings;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -11,7 +11,7 @@ using System.Text.Encodings.Web;
 namespace FMLab.Aspnet.LayeredArchitecture.Middlewares;
 
 public class ApiKeyAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> options,
-    ILoggerFactory logger, UrlEncoder encoder, IApplicationSettings settings)
+    ILoggerFactory logger, UrlEncoder encoder, IConfiguration configuration)
     : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -19,7 +19,7 @@ public class ApiKeyAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> opti
         if (!Request.Headers.TryGetValue("X-Api-Key", out var requestKey))
             return await Task.FromResult(AuthenticateResult.Fail("Missing API Key"));
 
-        if (string.Compare(requestKey, settings.ApiKey, StringComparison.CurrentCultureIgnoreCase) != 0)
+        if (string.Compare(requestKey, configuration["ApiKey"], StringComparison.CurrentCultureIgnoreCase) != 0)
             return await Task.FromResult(AuthenticateResult.Fail("Invalid API Key"));
 
         var claims = new[] { new Claim(ClaimTypes.Name, "ApiClient") };
