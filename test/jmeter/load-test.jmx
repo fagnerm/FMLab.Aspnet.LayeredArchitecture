@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
   <hashTree>
-    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Layered Architecture API - Load Test">
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Layered Architecture API - Throughput Discovery">
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments">
         <collectionProp name="Arguments.arguments">
@@ -24,26 +24,34 @@
       </elementProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="POST /users — 100 req/s">
-        <intProp name="ThreadGroup.num_threads">200</intProp>
-        <intProp name="ThreadGroup.ramp_time">10</intProp>
+
+      <!--
+        Throughput Discovery strategy
+        ─────────────────────────────
+        • Ramps from 0 → 300 concurrent threads over 5 min (1 thread/s).
+        • No ConstantThroughputTimer: threads run as fast as the API allows,
+          so observed TPS rises naturally with concurrency.
+        • DurationAssertion marks every sample that exceeds 1000 ms as failed.
+        • JSR223Listener evaluates a 100-sample sliding window; once ≥ 50 % of
+          recent samples are degraded (HTTP error OR response time > 1000 ms)
+          it calls askThreadsToStop() and the test ends automatically.
+        • Hard safety cap: 900 s (15 min).
+      -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Throughput Discovery — ramp to 300 threads">
+        <intProp name="ThreadGroup.num_threads">300</intProp>
+        <intProp name="ThreadGroup.ramp_time">300</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <longProp name="ThreadGroup.duration">900</longProp>
+        <longProp name="ThreadGroup.delay">0</longProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
-          <stringProp name="LoopController.loops">200</stringProp>
+          <stringProp name="LoopController.loops">-1</stringProp>
           <boolProp name="LoopController.continue_forever">false</boolProp>
         </elementProp>
       </ThreadGroup>
       <hashTree>
-        <ConstantThroughputTimer guiclass="TestBeanGUI" testclass="ConstantThroughputTimer" testname="Throughput — 100 req/s">
-          <doubleProp>
-            <name>throughput</name>
-            <value>6000.0</value>
-            <savedValue>0.0</savedValue>
-          </doubleProp>
-          <intProp name="calcMode">1</intProp>
-        </ConstantThroughputTimer>
-        <hashTree/>
+
         <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Headers" enabled="true">
           <collectionProp name="HeaderManager.headers">
             <elementProp name="" elementType="Header">
@@ -57,6 +65,7 @@
           </collectionProp>
         </HeaderManager>
         <hashTree/>
+
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /users">
           <stringProp name="HTTPSampler.domain">${BASE_URL}</stringProp>
           <stringProp name="HTTPSampler.port">${PORT}</stringProp>
@@ -78,6 +87,8 @@
           </elementProp>
         </HTTPSamplerProxy>
         <hashTree>
+
+          <!-- ── Pre-processor: generate unique random name + e-mail ──────── -->
           <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Random Name Generator" enabled="true">
             <stringProp name="scriptLanguage">groovy</stringProp>
             <stringProp name="script">
@@ -166,6 +177,66 @@ vars.put(&quot;USER_EMAIL&quot;, firstName + &quot;.&quot; + middleName + &quot;
             <stringProp name="cacheKey">false</stringProp>
           </JSR223PreProcessor>
           <hashTree/>
+
+          <!-- ── Assertion: fail any sample that exceeds 1000 ms ─────────── -->
+          <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Response Time &lt; 1000 ms" enabled="true">
+            <longProp name="DurationAssertion.duration">1000</longProp>
+          </DurationAssertion>
+          <hashTree/>
+
+          <!-- ── Listener: sliding-window auto-stop ─────────────────────── -->
+          <JSR223Listener guiclass="TestBeanGUI" testclass="JSR223Listener" testname="Auto-Stop on Degradation" enabled="true">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="script">
+// Sliding-window auto-stop
+// ─────────────────────────────────────────────────────────────────────────
+// Evaluates the last 100 samples. When &gt;= 50 % are degraded the test is
+// stopped automatically. A sample is considered degraded when:
+//   • The HTTP request fails (connection error, 4xx, 5xx), OR
+//   • The response time exceeds 1000 ms  ← caught by DurationAssertion above
+//     (assertion failure sets isSuccessful() = false)
+// ─────────────────────────────────────────────────────────────────────────
+
+def windowSize    = 100   // sliding window — number of recent samples to examine
+def stopThreshold = 0.50  // stop when this fraction of the window is degraded
+
+synchronized ('auto_stop_monitor'.intern()) {
+
+    // Skip evaluation once the stop has already been requested
+    if ('true'.equals(props.getProperty('autostop.triggered'))) return
+
+    // Lazily initialise the circular buffer stored in shared JMeter properties
+    def buf = props.get('autostop.buf')
+    if (buf == null) {
+        buf = new java.util.LinkedList()
+        props.put('autostop.buf', buf)
+    }
+
+    // Record 1 (degraded) or 0 (healthy) for this sample
+    buf.add(prev.isSuccessful() ? 0 : 1)
+    if (buf.size() &gt; windowSize) buf.removeFirst()
+
+    // Only act once the window is fully populated
+    if (buf.size() &gt;= windowSize) {
+        int    degraded = buf.count { it == 1 }
+        double rate     = degraded / (double) windowSize
+
+        if (rate &gt;= stopThreshold) {
+            props.put('autostop.triggered', 'true')
+            log.warn('AUTO-STOP: ' + (int)(rate * 100) + '% of last ' + windowSize
+                + ' samples degraded (HTTP error or response time &gt; 1000 ms). Stopping test.')
+            ctx.getEngine().askThreadsToStop()
+        }
+    }
+}
+            </stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+          </JSR223Listener>
+          <hashTree/>
+
+          <!-- ── Listener: full result detail (GUI / debug) ─────────────── -->
           <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
             <boolProp name="ResultCollector.error_logging">false</boolProp>
             <objProp>
@@ -203,7 +274,10 @@ vars.put(&quot;USER_EMAIL&quot;, firstName + &quot;.&quot; + middleName + &quot;
             <stringProp name="filename"></stringProp>
           </ResultCollector>
           <hashTree/>
+
         </hashTree>
+
+        <!-- ── Listener: aggregate summary saved to disk ─────────────────── -->
         <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report" enabled="true">
           <boolProp name="ResultCollector.error_logging">false</boolProp>
           <objProp>
@@ -241,6 +315,7 @@ vars.put(&quot;USER_EMAIL&quot;, firstName + &quot;.&quot; + middleName + &quot;
           <stringProp name="filename">results.jtl</stringProp>
         </ResultCollector>
         <hashTree/>
+
       </hashTree>
     </hashTree>
   </hashTree>
