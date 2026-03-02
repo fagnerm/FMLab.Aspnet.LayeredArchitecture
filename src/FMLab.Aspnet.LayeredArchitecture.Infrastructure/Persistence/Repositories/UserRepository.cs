@@ -53,11 +53,10 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> ExistsByKeyAsync(Name name, Email? email, CancellationToken cancellationToken)
     {
+        if (name is null && email is null) return false;
+
         return await _context.Users
-                             .AsNoTracking()
-                             .AsQueryable()
-                             .AnyAsync(u => u.Name.Value == name.Value ||
-                                            (email != null && u.Email != null && u.Email.Value == email.Value), cancellationToken)
+                             .AnyAsync(u => u.Name == name || u.Email == email, cancellationToken)
                              .ConfigureAwait(false);
     }
 }

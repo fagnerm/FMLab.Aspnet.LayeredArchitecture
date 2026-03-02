@@ -11,18 +11,29 @@ using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Context;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
-namespace FMLab.Aspnet.LayeredArchitecture.Infrastructure.DependecyInjection;
+namespace FMLab.Aspnet.LayeredArchitecture.Infrastructure.DependencyInjection;
 public static class InfrastructureModule
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IHostEnvironment environment)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config, IHostEnvironment environment)
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseInMemoryDatabase("layered-arch")
+            var connection = new NpgsqlConnectionStringBuilder()
+            {
+                Host = config["Database:Server"],
+                Port = int.Parse(config["Database:Port"]),
+                Database = config["Database:Name"],
+                Username = config["Database:User"],
+                Password = config["Database:Password"]
+            };
+
+            options.UseNpgsql(connection.ConnectionString)
                    .LogTo(Console.WriteLine, LogLevel.Information)
                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 

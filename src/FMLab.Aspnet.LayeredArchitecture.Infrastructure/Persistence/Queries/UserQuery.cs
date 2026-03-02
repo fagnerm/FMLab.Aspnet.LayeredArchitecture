@@ -31,13 +31,13 @@ public class UserQuery : IUserQuery
 
         var totalCount = await query.CountAsync(cancellationToken);
 
-        var items = await query.OrderByDescending(t => t.Name)
+        var items = await query.OrderBy(t => t.Id)
             .Skip((filter.Page - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .Select(t => new UserSummaryDTO(
                 t.Id,
                 t.Name.Value,
-                t.Email != null ? t.Email.Value : null,
+                t.Email.Value,
                 t.Status.ToString()
                 ))
             .ToListAsync(cancellationToken)
