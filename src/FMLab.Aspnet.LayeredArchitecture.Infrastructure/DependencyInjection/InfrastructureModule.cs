@@ -34,11 +34,11 @@ public static class InfrastructureModule
             };
 
             options.UseNpgsql(connection.ConnectionString)
-                   .LogTo(Console.WriteLine, LogLevel.Information)
                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
             if (environment.IsDevelopment())
-                options.EnableSensitiveDataLogging();
+                options.EnableSensitiveDataLogging()
+                       .LogTo(Console.WriteLine);
         });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
