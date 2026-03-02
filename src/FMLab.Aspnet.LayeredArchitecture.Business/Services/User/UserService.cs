@@ -4,6 +4,7 @@
 
 using FMLab.Aspnet.LayeredArchitecture.Business.DTOs;
 using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Persistence;
+using FMLab.Aspnet.LayeredArchitecture.Business.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
 using FMLab.Aspnet.LayeredArchitecture.Business.Shared.Result;
 using FMLab.Aspnet.LayeredArchitecture.Business.ValueObjects;
@@ -14,11 +15,13 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUserRepository _userRepository;
+    private readonly IUserQuery _userQuery;
 
-    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository)
+    public UserService(IUnitOfWork unitOfWork, IUserRepository userRepository, IUserQuery userQuery)
     {
         this._unitOfWork = unitOfWork;
         _userRepository = userRepository;
+        _userQuery = userQuery;
     }
 
     public async Task<Result<CreateUserOutputDTO>> CreateUserAsync(CreateUserInputDTO input, CancellationToken cancellationToken)
@@ -26,7 +29,8 @@ public class UserService : IUserService
         var name = new Name(input.Name);
         var email = input.Email is null ? null : new Email(input.Email);
 
-        var found = await _userRepository.ExistsByKeyAsync(name.Value, email?.Value, cancellationToken);
+        var found = await _userRepository.ExistsByKeyAsync(name, email, cancellationToken)
+                                         .ConfigureAwait(false);
 
         if (found) return Result<CreateUserOutputDTO>.Conflict("User already exists");
 
@@ -70,7 +74,8 @@ public class UserService : IUserService
     public async Task<Result<ListUsersOutputDTO>> ListAllUsersAsync(GetListUsersInputDTO input, CancellationToken cancellationToken)
     {
         var filter = new ListUsersFilterDTO(input.Status, input.Page, input.PageSize);
-        var result = await _userRepository.ListAsync(filter, cancellationToken);
+        var result = await _userQuery.ListAsync(filter, cancellationToken)
+                                     .ConfigureAwait(false);
 
         var output = new ListUsersOutputDTO(result.Items, result.Page, result.PageSize, result.TotalItems);
         return Result<ListUsersOutputDTO>.Success(output);
@@ -78,7 +83,8 @@ public class UserService : IUserService
 
     public async Task<Result<UserSummaryDTO>> ListUserAsync(GetUserInputDTO input, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.ListUserByIdAsync(input.Id, cancellationToken);
+        var user = await _userQuery.GetByIdAsync(input.Id, cancellationToken)
+                                   .ConfigureAwait(false);
 
         if (user == null)
         {
