@@ -3,6 +3,14 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 namespace FMLab.Aspnet.LayeredArchitecture.Business.Shared.Filter;
-public record PaginationFilter(
-    int Page,
-    int PageSize);
+public record PaginationFilter
+{
+    public int Page { get; init; }
+    public int PageSize { get; init; }
+
+    public PaginationFilter(int? page, int? pageSize)
+    {
+        Page = page ?? 1;
+        PageSize = pageSize ?? 100;
+    }
+}

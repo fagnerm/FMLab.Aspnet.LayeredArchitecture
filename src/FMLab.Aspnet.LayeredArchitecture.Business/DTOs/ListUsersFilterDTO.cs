@@ -6,5 +6,13 @@ using FMLab.Aspnet.LayeredArchitecture.Business.Enums;
 using FMLab.Aspnet.LayeredArchitecture.Business.Shared.Filter;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Business.DTOs;
-public record ListUsersFilterDTO(UserStatus? Status, int Page, int PageSize)
-    : PaginationFilter(Page, PageSize);
+public record ListUsersFilterDTO : PaginationFilter
+{
+    public UserStatus? Status { get; init; }
+
+    public ListUsersFilterDTO(UserStatus? status, int? page, int? pageSize)
+        : base(page, pageSize)
+    {
+        Status = status;
+    }
+}

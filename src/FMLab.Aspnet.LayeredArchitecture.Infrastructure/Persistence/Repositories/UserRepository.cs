@@ -22,11 +22,14 @@ public class UserRepository : IUserRepository
     {
         await _context.AddAsync(User, cancellationToken)
                         .ConfigureAwait(false);
+        await _context.SaveChangesAsync(cancellationToken)
+                        .ConfigureAwait(false);
     }
 
-    public void Delete(User user)
+    public async Task Delete(User user)
     {
         _context.Remove(user);
+        await _context.SaveChangesAsync();
     }
 
     public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -40,10 +43,12 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public User Update(User user)
+    public async Task<User> Update(User user)
     {
-        _context.Update(user);
-        return user;
+        var entry = _context.Update(user);
+        await _context.SaveChangesAsync();
+
+        return entry.Entity;
     }
 
     public async Task<bool> ExistsByKeyAsync(Name name, Email? email, CancellationToken cancellationToken)

@@ -55,5 +55,5 @@ X-Api-Key: {{ApiKey}}
 
 ###
 
-DELETE {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/
-X-Api-Key: {{ApiKey}}1
+DELETE {{FMLab.Aspnet.CleanArchitecture.Api_HostAddress}}/Users/1
+X-Api-Key: {{ApiKey}}
