@@ -4,9 +4,11 @@
 
 using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Email;
 using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Persistence;
+using FMLab.Aspnet.LayeredArchitecture.Business.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.ExternalServices.Email;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Context;
+using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,7 @@ public static class InfrastructureModule
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUserQuery, UserQuery>();
         services.AddScoped<IEmailService, EmailService>();
 
         return services;
