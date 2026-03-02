@@ -7,4 +7,4 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Api.Endpoints.User;
 
-public record ListUsersFilterRequest(UserStatus? Status, [MinLength(1)] int Page, [MaxLength(100)] int PageSize);
+public record ListUsersFilterRequest(UserStatus? Status, int? Page, int? PageSize);

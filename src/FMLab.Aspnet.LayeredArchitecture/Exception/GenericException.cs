@@ -11,7 +11,7 @@ public class GenericException : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, System.Exception exception, CancellationToken cancellationToken)
     {
-        if (exception is DomainException) return false;
+        if (exception is Business.Exceptions.DomainException) return false;
 
         var problem = new ProblemDetails
         {

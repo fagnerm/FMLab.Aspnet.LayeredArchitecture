@@ -6,10 +6,12 @@ using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Email;
 using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Persistence;
 using FMLab.Aspnet.LayeredArchitecture.Business.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
+using FMLab.Aspnet.LayeredArchitecture.Business.Shared.Settings;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.ExternalServices.Email;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Context;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Repositories;
+using FMLab.Aspnet.LayeredArchitecture.Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +24,7 @@ public static class InfrastructureModule
     {
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseInMemoryDatabase("clean-arch")
+            options.UseInMemoryDatabase("layered-arch")
                    .LogTo(Console.WriteLine, LogLevel.Information)
                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
@@ -34,7 +36,8 @@ public static class InfrastructureModule
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserQuery, UserQuery>();
         services.AddScoped<IEmailService, EmailService>();
-
+        services.AddSingleton<IApplicationSettings, ApplicationSettingsMonitor>();
+        
         return services;
     }
 }

@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddInfrastructure(builder.Environment);
 builder.Services.AddApplication();
-builder.Services.AddAppSettings();
 builder.Services.AddAppProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAppSwagger();

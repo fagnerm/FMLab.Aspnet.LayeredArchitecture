@@ -10,8 +10,8 @@ namespace FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
 public interface IUserRepository
 {
     Task AddAsync(User user, CancellationToken cancellationToken);
-    void Delete(User user);
+    Task Delete(User user);
     Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken);
-    User Update(User user);
+    Task<User> Update(User user);
     Task<bool> ExistsByKeyAsync(Name name, Email? email, CancellationToken cancellationToken);
 }
