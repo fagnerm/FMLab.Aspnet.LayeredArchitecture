@@ -12,7 +12,7 @@ x-api: &api-base
       Database:User: ${DB_USER}
       Database:Password: ${DB_PASSWORD}
     depends_on:
-      postgres:
+      pgbouncer:
         condition: service_healthy
     networks:
       - app-network
@@ -41,6 +41,35 @@ services:
     depends_on:
       - api1
       - api2
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  pgbouncer:
+    image: edoburu/pgbouncer:v1.24.1-p1
+    container_name: pgbouncer
+    environment:
+      DB_HOST: postgres
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      LISTEN_PORT: ${DB_PORT}
+      POOL_MODE: transaction
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 25
+      MIN_POOL_SIZE: 5
+      RESERVE_POOL_SIZE: 5
+      AUTH_TYPE: scram-sha-256
+      IGNORE_STARTUP_PARAMETERS: extra_float_digits
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -p ${DB_PORT} -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app-network
     restart: unless-stopped

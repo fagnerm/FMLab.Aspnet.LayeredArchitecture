@@ -30,7 +30,8 @@ public static class InfrastructureModule
                 Port = int.Parse(config["Database:Port"]),
                 Database = config["Database:Name"],
                 Username = config["Database:User"],
-                Password = config["Database:Password"]
+                Password = config["Database:Password"],
+                NoResetOnClose = true
             };
 
             options.UseNpgsql(connection.ConnectionString)
