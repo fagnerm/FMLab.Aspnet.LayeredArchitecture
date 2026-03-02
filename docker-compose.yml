@@ -3,7 +3,7 @@ services:
   api1:
     build:
       context: .
-      dockerfile: FMLab.Aspnet.LayeredArchitecture/Dockerfile
+      dockerfile: src/FMLab.Aspnet.LayeredArchitecture/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_HTTP_PORTS: 8080
@@ -20,11 +20,12 @@ services:
       resources:
         limits:
           cpus: '2'
+          memory: 512M
 
   api2:
     build:
       context: .
-      dockerfile: FMLab.Aspnet.LayeredArchitecture/Dockerfile
+      dockerfile: src/FMLab.Aspnet.LayeredArchitecture/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_HTTP_PORTS: 8080
@@ -41,6 +42,7 @@ services:
       resources:
         limits:
           cpus: '2'
+          memory: 512M
 
   nginx:
     image: nginx:1.27-alpine
