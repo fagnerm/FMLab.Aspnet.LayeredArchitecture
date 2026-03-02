@@ -75,7 +75,7 @@ public class UserService : IUserService
         return Result<NoOutput>.NoContent();
     }
 
-    public async Task<Result<ListUsersOutputDTO>> ListAllUsersAsync(GetListUsersInputDTO input, CancellationToken cancellationToken)
+    public async Task<Result<ListUsersOutputDTO>> ListAllUsersAsync(ListUsersFilterDTO input, CancellationToken cancellationToken)
     {
         var filter = new ListUsersFilterDTO(input.Status, input.Page, input.PageSize);
         var result = await _userQuery.ListAsync(filter, cancellationToken)

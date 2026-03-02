@@ -9,7 +9,7 @@ namespace FMLab.Aspnet.LayeredArchitecture.Business.Services.User;
 
 public interface IUserService
 {
-    Task<Result<ListUsersOutputDTO>> ListAllUsersAsync(GetListUsersInputDTO input, CancellationToken cancellationToken);
+    Task<Result<ListUsersOutputDTO>> ListAllUsersAsync(ListUsersFilterDTO input, CancellationToken cancellationToken);
     Task<Result<UserSummaryDTO>> ListUserAsync(GetUserInputDTO input, CancellationToken cancellationToken);
     Task<Result<CreateUserOutputDTO>> CreateUserAsync(CreateUserInputDTO input, CancellationToken cancellationToken);
     Task<Result<NoOutput>> DisableUserAsync(DisableUserInputDTO input, CancellationToken cancellationToken);
