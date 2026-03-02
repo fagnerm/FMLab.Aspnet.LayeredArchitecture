@@ -7,7 +7,7 @@ using FMLab.Aspnet.LayeredArchitecture.Business.Services.User;
 using FMLab.Aspnet.LayeredArchitecture.Helper;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FMLab.Aspnet.LayeredArchitecture.Endpoints.User;
+namespace FMLab.Aspnet.LayeredArchitecture.Api.Endpoints.User;
 
 internal static class UserEndpoints
 {
@@ -65,8 +65,9 @@ internal static class UserEndpoints
             .WithOpenApi();
     }
 
-    private static async Task<IResult> ListAllUsersEndpoint([FromServices] IUserService service, [AsParameters] GetListUsersInputDTO input, CancellationToken cancellationToken)
+    private static async Task<IResult> ListAllUsersEndpoint([FromServices] IUserService service, [AsParameters] ListUsersFilterRequest request, CancellationToken cancellationToken)
     {
+        var input = new ListUsersFilterDTO(request.Status, request.Page, request.PageSize);
         var output = await service.ListAllUsersAsync(input, cancellationToken);
 
         return output.ToProblemResult();
