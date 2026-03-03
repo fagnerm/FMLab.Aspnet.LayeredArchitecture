@@ -12,6 +12,8 @@ using Npgsql;
 namespace FMLab.Aspnet.LayeredArchitecture.Infrastructure.Persistence.Repositories;
 public class UserRepository : IUserRepository
 {
+
+
     private readonly ApplicationDbContext _context;
 
     public UserRepository(ApplicationDbContext context)
@@ -47,8 +49,7 @@ public class UserRepository : IUserRepository
         var user = await _context
                             .Users
                             .AsTracking()
-                            .SingleOrDefaultAsync(_ => _.Id == id, cancellationToken)
-                            .ConfigureAwait(false);
+                            .SingleOrDefaultAsync(_ => _.Id == id, cancellationToken);
 
         return user;
     }
