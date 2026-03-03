@@ -3,7 +3,6 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -22,9 +21,9 @@ public class ApiKeyAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> opti
         if (!string.Equals(requestKey, configuration["ApiKey"], StringComparison.OrdinalIgnoreCase))
             return Task.FromResult(AuthenticateResult.Fail("Invalid API Key"));
 
-        var claims   = new[] { new Claim(ClaimTypes.Name, "ApiClient") };
+        var claims = new[] { new Claim(ClaimTypes.Name, "ApiClient") };
         var identity = new ClaimsIdentity(claims, Scheme.Name);
-        var ticket   = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
+        var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
 
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }

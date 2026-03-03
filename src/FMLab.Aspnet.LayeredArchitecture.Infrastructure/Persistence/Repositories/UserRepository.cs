@@ -22,10 +22,8 @@ public class UserRepository : IUserRepository
 
     public async Task AddAsync(User User, CancellationToken cancellationToken)
     {
-        await _context.AddAsync(User, cancellationToken)
-                        .ConfigureAwait(false);
-        await _context.SaveChangesAsync(cancellationToken)
-                        .ConfigureAwait(false);
+        await _context.AddAsync(User, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
     public async Task Delete(User user)
@@ -58,7 +56,6 @@ public class UserRepository : IUserRepository
                              .AsNoTracking()
                              .AsQueryable()
                              .AnyAsync(u => u.Name.Value == name.Value ||
-                                            (email != null && u.Email != null && u.Email.Value == email.Value), cancellationToken)
-                             .ConfigureAwait(false);
+                                            (email != null && u.Email != null && u.Email.Value == email.Value), cancellationToken);
     }
 }

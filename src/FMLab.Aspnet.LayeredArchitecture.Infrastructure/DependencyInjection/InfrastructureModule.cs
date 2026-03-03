@@ -37,7 +37,7 @@ public static class InfrastructureModule
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserQuery, UserQuery>();
         services.AddScoped<IEmailService, EmailService>();
-        
+
         return services;
     }
 }
