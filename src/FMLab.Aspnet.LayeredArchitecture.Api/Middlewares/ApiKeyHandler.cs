@@ -14,18 +14,18 @@ public class ApiKeyAuthHandler(IOptionsMonitor<AuthenticationSchemeOptions> opti
     ILoggerFactory logger, UrlEncoder encoder, IConfiguration configuration)
     : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
-    protected async override Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         if (!Request.Headers.TryGetValue("X-Api-Key", out var requestKey))
-            return await Task.FromResult(AuthenticateResult.Fail("Missing API Key"));
+            return Task.FromResult(AuthenticateResult.Fail("Missing API Key"));
 
-        if (string.Compare(requestKey, configuration["ApiKey"], StringComparison.CurrentCultureIgnoreCase) != 0)
-            return await Task.FromResult(AuthenticateResult.Fail("Invalid API Key"));
+        if (!string.Equals(requestKey, configuration["ApiKey"], StringComparison.OrdinalIgnoreCase))
+            return Task.FromResult(AuthenticateResult.Fail("Invalid API Key"));
 
-        var claims = new[] { new Claim(ClaimTypes.Name, "ApiClient") };
+        var claims   = new[] { new Claim(ClaimTypes.Name, "ApiClient") };
         var identity = new ClaimsIdentity(claims, Scheme.Name);
-        var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
+        var ticket   = new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name);
 
-        return await Task.FromResult(AuthenticateResult.Success(ticket));
+        return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 }
