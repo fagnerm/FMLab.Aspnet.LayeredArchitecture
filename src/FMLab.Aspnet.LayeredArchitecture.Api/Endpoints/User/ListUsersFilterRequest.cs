@@ -3,7 +3,6 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FMLab.Aspnet.LayeredArchitecture.Business.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Api.Endpoints.User;
 

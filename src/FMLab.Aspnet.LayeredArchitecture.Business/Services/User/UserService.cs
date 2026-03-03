@@ -4,7 +4,6 @@
 
 using FMLab.Aspnet.LayeredArchitecture.Business.DTOs;
 using FMLab.Aspnet.LayeredArchitecture.Business.Exceptions;
-using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Persistence;
 using FMLab.Aspnet.LayeredArchitecture.Business.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
 using FMLab.Aspnet.LayeredArchitecture.Business.Shared.Result;
@@ -27,7 +26,7 @@ public class UserService : IUserService
     {
         var name = new Name(input.Name);
         var email = input.Email is null ? null : new Email(input.Email);
-        var user  = new Entities.User(name, email);
+        var user = new Entities.User(name, email);
 
         try
         {

@@ -30,7 +30,7 @@ public class UserRepository : IUserRepository
             await _context.SaveChangesAsync(cancellationToken)
                           .ConfigureAwait(false);
         }
-        catch (DbUpdateException ex) 
+        catch (DbUpdateException ex)
             when (ex.InnerException is PostgresException { SqlState: "23505" })
         {
             _context.Entry(user).State = EntityState.Detached;

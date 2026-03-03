@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Npgsql;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Infrastructure.DependencyInjection;
@@ -48,7 +47,7 @@ public static class InfrastructureModule
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserQuery, UserQuery>();
         services.AddScoped<IEmailService, EmailService>();
-        
+
         return services;
     }
 }
