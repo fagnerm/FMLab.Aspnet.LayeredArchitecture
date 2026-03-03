@@ -27,8 +27,10 @@ public static class InfrastructureModule
                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
             if (environment.IsDevelopment())
+            {
                 options.EnableSensitiveDataLogging()
                        .LogTo(Console.WriteLine);
+            }
         });
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
