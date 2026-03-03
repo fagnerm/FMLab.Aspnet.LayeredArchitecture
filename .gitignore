@@ -54,3 +54,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Jmeter
+*.jtl
+/test/jmeter/report/
+/test/jmeter/*.log
