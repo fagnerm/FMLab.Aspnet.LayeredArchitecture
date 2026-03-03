@@ -3,6 +3,7 @@
 // Licensed under the MIT License. See LICENSE file in the project root for details.
 
 using FMLab.Aspnet.LayeredArchitecture.Business.DTOs;
+using FMLab.Aspnet.LayeredArchitecture.Business.Exceptions;
 using FMLab.Aspnet.LayeredArchitecture.Business.ExternalServices.Persistence;
 using FMLab.Aspnet.LayeredArchitecture.Business.Queries;
 using FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
@@ -26,18 +27,19 @@ public class UserService : IUserService
     {
         var name = new Name(input.Name);
         var email = input.Email is null ? null : new Email(input.Email);
+        var user  = new Entities.User(name, email);
 
-        var found = await _userRepository.ExistsByKeyAsync(name, email, cancellationToken)
-                                         .ConfigureAwait(false);
-
-        if (found) return Result<CreateUserOutputDTO>.Conflict("User already exists");
-
-        var user = new Entities.User(name, email);
-        await _userRepository.AddAsync(user, cancellationToken)
-                             .ConfigureAwait(false);
+        try
+        {
+            await _userRepository.AddAsync(user, cancellationToken)
+                                 .ConfigureAwait(false);
+        }
+        catch (DomainException ex) when (ex.Message == "User already exists")
+        {
+            return Result<CreateUserOutputDTO>.Conflict(ex.Message);
+        }
 
         var result = new CreateUserOutputDTO(user.Id, user.Name.Value, user.Email?.Value, user.Status.ToString());
-
         return Result<CreateUserOutputDTO>.Success(result);
     }
 

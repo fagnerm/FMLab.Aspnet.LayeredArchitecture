@@ -4,7 +4,6 @@
 
 
 using FMLab.Aspnet.LayeredArchitecture.Business.Entities;
-using FMLab.Aspnet.LayeredArchitecture.Business.ValueObjects;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Business.Repositories;
 public interface IUserRepository
@@ -13,5 +12,4 @@ public interface IUserRepository
     Task Delete(User user);
     Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken);
     Task<User> Update(User user);
-    Task<bool> ExistsByKeyAsync(Name name, Email? email, CancellationToken cancellationToken);
 }

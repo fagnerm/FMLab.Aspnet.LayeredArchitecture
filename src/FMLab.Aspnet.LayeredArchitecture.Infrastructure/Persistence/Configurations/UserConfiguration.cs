@@ -23,5 +23,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(s => s.Status)
                .HasColumnType("VARCHAR(50)")
                .IsRequired();
+        builder.HasIndex(u => u.Name).IsUnique();
+        builder.HasIndex(u => u.Email).IsUnique();
     }
 }
