@@ -39,11 +39,11 @@
       -->
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Throughput Discovery — ramp to 300 threads">
         <intProp name="ThreadGroup.num_threads">300</intProp>
-        <intProp name="ThreadGroup.ramp_time">300</intProp>
+        <intProp name="ThreadGroup.ramp_time">150</intProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">false</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
-        <longProp name="ThreadGroup.duration">900</longProp>
+        <longProp name="ThreadGroup.duration">300</longProp>
         <longProp name="ThreadGroup.delay">0</longProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
           <stringProp name="LoopController.loops">-1</stringProp>
