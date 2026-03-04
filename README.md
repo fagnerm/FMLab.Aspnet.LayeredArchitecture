@@ -1,6 +1,6 @@
 ## Project Overview
 
-ASP.NET Core 8 boilerplate implementing Layered Architecture with Nginx.
+ASP.NET Core 8 boilerplate implementing Layered Architecture.
 
 ## Stack
 
@@ -16,14 +16,13 @@ ASP.NET Core 8 boilerplate implementing Layered Architecture with Nginx.
 ### Layers
 
 - **Api**: Routes, auth, request/response mapping.
-- **Business**: Services, value objects, DTOs, interfaces .
+- **Business**: Services, value objects, DTOs, interfaces.
 - **Infrastructure**: EF Core, repositories, external services.
 
 ### Key Patterns
 
 - **Result Pattern**: Common return type for use case outcomes, replacing exception-based control flow.
 - **IRepository + IQuery**: Separates transaction operations(repository) from read operations(query).
-- **Services**: Responsible to handler each action that a user can perform.
 - **Value Objects**: Immutable types that encapsulate and validate their own business rules.
 
 ## API Endpoints
