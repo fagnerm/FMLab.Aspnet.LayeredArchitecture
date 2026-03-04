@@ -55,6 +55,10 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
+# Environment secrets
+.env
+!.env.example
+
 # Jmeter
 *.jtl
 /test/jmeter/report/
