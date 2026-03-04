@@ -16,7 +16,7 @@ builder.Services.AddAppProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAppSwagger();
 builder.Services.AddAuthentication("ApiKey")
-    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthHandler>("ApiKey", null);
+                .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthHandler>("ApiKey", null);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
