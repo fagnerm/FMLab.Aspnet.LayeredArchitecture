@@ -1,12 +1,12 @@
 ## Project Overview
 
-ASP.NET Core 8 boilerplate implementing Layered Architecture with Nginx and In-Memory database.
+ASP.NET Core 8 boilerplate implementing Layered Architecture with Nginx.
 
 ## Stack
 
 - **API**: ASP.NET Core 8 Minimal API
-- **ORM**: Entity Framework Core 8 + Npgsql
-- **Database**: PostgreSQL 16
+- **ORM**: Entity Framework Core 8
+- **Database**: In-Memory
 - **Reverse proxy**: Nginx (2 API instances, keepalive)
 
 ## Architecture
@@ -15,7 +15,7 @@ ASP.NET Core 8 boilerplate implementing Layered Architecture with Nginx and In-M
 
 ### Layers
 
-- **Application**: Routes, auth, request/response mapping.
+- **Api**: Routes, auth, request/response mapping.
 - **Business**: Services, value objects, DTOs, interfaces .
 - **Infrastructure**: EF Core, repositories, external services.
 
