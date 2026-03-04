@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Api.Endpoints.User;
 
-internal static class UserEndpoints
+public static class UserEndpoints
 {
     internal static void MapUser(WebApplication app)
     {
