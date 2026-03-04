@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -18,6 +18,12 @@
 	  <PackageReference Include="TngTech.ArchUnitNET.xUnit" />
 	  <PackageReference Include="xunit" />
 	  <PackageReference Include="xunit.runner.visualstudio" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FMLab.Aspnet.LayeredArchitecture.Api\FMLab.Aspnet.LayeredArchitecture.Api.csproj" />
+    <ProjectReference Include="..\FMLab.Aspnet.LayeredArchitecture.Business\FMLab.Aspnet.LayeredArchitecture.Business.csproj" />
+    <ProjectReference Include="..\FMLab.Aspnet.LayeredArchitecture.Infrastructure\FMLab.Aspnet.LayeredArchitecture.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
