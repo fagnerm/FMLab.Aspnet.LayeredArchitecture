@@ -6,7 +6,7 @@ ASP.NET Core 8 boilerplate implementing Layered Architecture.
 
 - **API**: ASP.NET Core 8 Minimal API
 - **ORM**: Entity Framework Core 8
-- **Database**: In-Memory
+- **Database**: Postgres 16
 - **Reverse proxy**: Nginx (2 API instances, keepalive)
 
 ## Architecture
