@@ -12,13 +12,13 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
 # Copy csproj files first to leverage Docker layer caching for restore
-COPY ["FMLab.Aspnet.LayeredArchitecture/FMLab.Aspnet.LayeredArchitecture.Api.csproj", "FMLab.Aspnet.LayeredArchitecture/"]
+COPY ["FMLab.Aspnet.LayeredArchitecture.Api/FMLab.Aspnet.LayeredArchitecture.Api.csproj", "FMLab.Aspnet.LayeredArchitecture.Api/"]
 COPY ["FMLab.Aspnet.LayeredArchitecture.Business/FMLab.Aspnet.LayeredArchitecture.Business.csproj", "FMLab.Aspnet.LayeredArchitecture.Business/"]
 COPY ["FMLab.Aspnet.LayeredArchitecture.Infrastructure/FMLab.Aspnet.LayeredArchitecture.Infrastructure.csproj", "FMLab.Aspnet.LayeredArchitecture.Infrastructure/"]
-RUN dotnet restore "FMLab.Aspnet.LayeredArchitecture/FMLab.Aspnet.LayeredArchitecture.Api.csproj"
+RUN dotnet restore "FMLab.Aspnet.LayeredArchitecture.Api/FMLab.Aspnet.LayeredArchitecture.Api.csproj"
 
 COPY . .
-WORKDIR "/src/FMLab.Aspnet.LayeredArchitecture"
+WORKDIR "/src/FMLab.Aspnet.LayeredArchitecture.Api"
 RUN dotnet build "FMLab.Aspnet.LayeredArchitecture.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
