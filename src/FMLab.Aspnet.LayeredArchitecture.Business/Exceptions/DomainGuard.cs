@@ -10,13 +10,6 @@ public static class DomainGuard
         throw new DomainException(message, innerException);
     }
 
-    public static void ThrowIfNull(this object obj)
-    {
-        if (obj is not null) return;
-
-        throw new DomainException($"{nameof(obj)} can't be null");
-    }
-
     public static void ThrowIfNullOrEmpty(this string obj, string message)
     {
         if (!string.IsNullOrEmpty(obj)) return;

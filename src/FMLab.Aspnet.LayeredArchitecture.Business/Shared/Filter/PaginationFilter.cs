@@ -5,12 +5,16 @@
 namespace FMLab.Aspnet.LayeredArchitecture.Business.Shared.Filter;
 public record PaginationFilter
 {
+    private const int MAX_PAGE_SIZE = 100;
+
     public int Page { get; init; }
     public int PageSize { get; init; }
 
     public PaginationFilter(int? page, int? pageSize)
     {
+        pageSize ??= 100;
+
         Page = page ?? 1;
-        PageSize = pageSize ?? 100;
+        PageSize = Math.Min((int)pageSize, MAX_PAGE_SIZE);
     }
 }

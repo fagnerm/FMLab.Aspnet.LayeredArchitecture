@@ -11,16 +11,10 @@ using FMLab.Aspnet.LayeredArchitecture.Business.ValueObjects;
 
 namespace FMLab.Aspnet.LayeredArchitecture.Business.Services.User;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository, IUserQuery userQuery) : IUserService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IUserQuery _userQuery;
-
-    public UserService(IUserRepository userRepository, IUserQuery userQuery)
-    {
-        _userRepository = userRepository;
-        _userQuery = userQuery;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
+    private readonly IUserQuery _userQuery = userQuery;
 
     public async Task<Result<CreateUserOutputDTO>> CreateUserAsync(CreateUserInputDTO input, CancellationToken cancellationToken)
     {

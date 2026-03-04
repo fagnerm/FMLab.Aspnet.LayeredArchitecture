@@ -21,7 +21,6 @@ public class UserQuery : IUserQuery
     public async Task<CollectionResult<UserSummaryDTO>> ListAsync(ListUsersFilterDTO filter, CancellationToken cancellationToken)
     {
         var query = _context.Users
-                            .AsNoTracking()
                             .AsQueryable();
 
         if (filter.Status.HasValue)
@@ -50,7 +49,6 @@ public class UserQuery : IUserQuery
     public async Task<UserSummaryDTO?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var query = _context.Users
-                            .AsNoTracking()
                             .AsQueryable();
 
         var user = await query.SingleOrDefaultAsync(u => u.Id == id, cancellationToken)
